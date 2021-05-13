@@ -1,0 +1,42 @@
+Design Specification
+
+BJay needs a discord bot to allow administration of the outfit, events and tracking member participation
+It will need to keep track of events that have been started. Events to start. And the event participants.
+Through participation, outfit members will earn experierence as a metric for measuring participation
+
+Each event will have a list of participants, a start time, a duration and the roles avaiable in that event.
+Each participant will fill up a role.
+After the event has ended, each participant will earn expierence provided they attended the event.
+Just before an event starts, the bot will ask each participant to confirm their attendance.
+
+Out with events, participants will be able to see their level. And outfit leaders will be able to see levels of everyone
+Each participant will have a log of events they have been too, and the last time they were at the event.
+
+Each member will have to claim a character within the outfit
+
+Classes we will need:
+Bot
+- outfitName: string
+- commandPrefix: string
+- database: Database
+- outfit: Outfit
+
+Database
+
+
+Outfit
+- members: list(Member)
+- history: list(Event)
+Event
+- start: datetime object
+- duration: int (hours)
+- composition: dict
+    subclass of member called participant
+    - role: string
+    - attended: bool
+Member
+- claimed: boolean
+- character: string (name of the character in game)
+- level: int
+- xp to next level: int
+- history
