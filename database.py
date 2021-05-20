@@ -2,23 +2,39 @@ import pymongo
 
 class Database(pymongo.MongoClient):
 
-    host = "127.0.0.1"
-    username = "bjay"
-    password = "bjay"
-    authSource = "bjay"
+    HOST = "127.0.0.1"
+    COLLECTIONS = ["members", "events", "afk"]
 
-    def __init__(self):
+    def __init__(self, tag: str, **kwargs):
 
-        super().__init__(self.host, 
-                        username=self.username, 
-                        password=self.password,
-                        authSource=self.authSource)
+        # If the tag supplied is in the form '[TAG]', then remove the square brackets
+        self.tag = tag.replace("[", "").replace("]", "")
+        host = kwargs.get("host", self.HOST)
+        super().__init__(
+            host, 
+            **kwargs
+        )
+        self._create_database(name=self.tag)
 
-    def get_member(_id: int) -> dict:
+    @classmethod
+    def create(cls, tag :str, **kwargs):
 
-        return self.bjay.members.find_one({"_id": _id})
+        Database.__init__(cls, tag=tag, **kwargs)._create_database(name=cls.tag)
+        return cls
+
+    def __call__(self):
+
+        return self[self.tag]
+
+    def _create_database(self, name: str):
+        
+        for collection in self.COLLECTIONS:
+            try:
+                self[name].create_collection(collection)
+            except pymongo.errors.CollectionInvalid:
+                pass
+
 
 if __name__ == "__main__":
 
-    database = Database().bjay
-    test = database.members.find_one({"test": "123"})
+    database = Database(tag="[BJay]")
